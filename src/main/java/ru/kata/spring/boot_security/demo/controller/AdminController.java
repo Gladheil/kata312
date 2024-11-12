@@ -13,7 +13,10 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -42,6 +45,10 @@ public class AdminController {
 
     @PostMapping("/addUser")
     public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
+        if (userService.getUserByUsername(user.getUsername()) != null) {
+            bindingResult.rejectValue("username", "username.exists", "Username already exists");
+            return "addUser";
+        }
         if (bindingResult.hasErrors()) {
             return "addUser";
         } else {
@@ -67,12 +74,16 @@ public class AdminController {
     @PostMapping("/saveUserAfterUpdate")
     public String saveUserAfterUpdate(@RequestParam("roles") String roles,
             @Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
-        System.out.println(user.getId());
+        if (userService.getUserByUsername(user.getUsername()) != null &&
+        userService.getIdByUsername(user.getUsername()) != user.getId()) {
+            bindingResult.rejectValue("username", "username.exists", "Username already exists");
+            return "updateUser";
+        }
         if (bindingResult.hasErrors()) {
             return "updateUser";
         } else {
             System.out.println(roles);
-            List<Role> userRoles = roleService.getRolesByNames(Arrays.asList(roles.split(",")));
+            Set<Role> userRoles = new HashSet<>(roleService.getRolesByNames(Arrays.asList(roles.split(","))));
             user.setRoles(userRoles);
             userService.updateUser(user);
             return "redirect:/admin";

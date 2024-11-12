@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.dao.UserDAO;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
+    public Set<User> getAll() {
         return userDAO.getUsers();
     }
 
@@ -55,5 +56,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUserById(int id) {
         userDAO.deleteUserById(id);
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userDAO.getUserByUsername(username);
+    }
+
+    @Override
+    public int getIdByUsername(String username) {
+        return userDAO.getIdByUsername(username);
     }
 }

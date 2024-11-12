@@ -7,10 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -41,7 +38,7 @@ public class User implements UserDetails {
     private int salary;
 
     @Column(unique = true)
-    @NotNull(message = "Surname is required")
+    @NotNull(message = "Username is required")
     @Size(min = 2, max = 50, message = "Username must be between 2 and 50 characters")
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Surname must contains only latina letters")
     private String username;
@@ -50,7 +47,7 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles = roles = new ArrayList<>();;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
@@ -145,11 +142,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

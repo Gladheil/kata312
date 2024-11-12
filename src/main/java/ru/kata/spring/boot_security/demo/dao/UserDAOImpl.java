@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -32,8 +35,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> getUsers() {
-        return em.createQuery("from User", User.class).getResultList();
+    public Set<User> getUsers() {
+        return em.createQuery("from User", User.class).getResultStream().collect(Collectors.toSet());
     }
 
     @Override
@@ -48,6 +51,18 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User getUserByUsername(String username) {
-        return em.createQuery("from User where username = :username", User.class).setParameter("username", username).getSingleResult();
+        try {
+            return em.createQuery("from User where username = :username", User.class).setParameter("username", username).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public int getIdByUsername(String username) {
+        return em.createQuery("from User where username = :username", User.class)
+                .setParameter("username", username)
+                .getSingleResult()
+                .getId();
     }
 }
