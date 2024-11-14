@@ -18,11 +18,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
         this.userDAO = userDAO;
     }
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDAO.getUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         } else {
+            System.out.println(user.getRoles());
             return user;
         }
     }

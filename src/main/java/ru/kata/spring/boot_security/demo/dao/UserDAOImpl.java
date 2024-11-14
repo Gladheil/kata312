@@ -2,11 +2,11 @@ package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,9 +50,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    @Transactional
     public User getUserByUsername(String username) {
         try {
-            return em.createQuery("from User where username = :username", User.class).setParameter("username", username).getSingleResult();
+            return em.createQuery("from User where username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
