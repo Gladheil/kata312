@@ -24,7 +24,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         } else {
-            System.out.println(user.getRoles());
+            user.getRoles().size(); //Ля, ну это или костыль который просто слеплен из моих догадок, или фича
             return user;
         }
     }
